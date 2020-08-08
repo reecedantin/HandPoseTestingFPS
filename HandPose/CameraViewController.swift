@@ -26,6 +26,10 @@ class CameraViewController: UIViewController {
     
     private var gestureProcessor = HandGestureProcessor()
     
+    @IBOutlet weak var showFPS: UILabel!
+    var fps = 0
+    var timer = Date()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         drawOverlay.frame = view.layer.bounds
@@ -79,13 +83,36 @@ class CameraViewController: UIViewController {
         
         let session = AVCaptureSession()
         session.beginConfiguration()
-        session.sessionPreset = AVCaptureSession.Preset.high
+        session.sessionPreset = AVCaptureSession.Preset.hd1920x1080
         
         // Add a video input.
         guard session.canAddInput(deviceInput) else {
             throw AppError.captureSessionSetup(reason: "Could not add video device input to the session")
         }
         session.addInput(deviceInput)
+        
+        var selectedFormat = videoDevice.formats.first
+        
+        for format in videoDevice.formats {
+            let description = format.formatDescription as CMFormatDescription
+            let dimensions = CMVideoFormatDescriptionGetDimensions(description)
+            let width = dimensions.width
+            let height = dimensions.height
+            
+            let maxFps = format.videoSupportedFrameRateRanges.first!.maxFrameRate
+
+            if  60 <= maxFps && width == 1920 && height == 1080 {
+              selectedFormat = format
+            }
+        }
+        
+        
+        print(videoDevice.activeFormat.videoSupportedFrameRateRanges)
+        try videoDevice.lockForConfiguration()
+        videoDevice.activeFormat = selectedFormat!
+        videoDevice.activeVideoMinFrameDuration = CMTime(value: 1, timescale: 60)
+        videoDevice.activeVideoMaxFrameDuration = CMTime(value: 1, timescale: 60)
+        videoDevice.unlockForConfiguration()
         
         let dataOutput = AVCaptureVideoDataOutput()
         if session.canAddOutput(dataOutput) {
@@ -207,6 +234,12 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             DispatchQueue.main.sync {
                 self.processPoints(thumbTip: thumbTip, indexTip: indexTip)
             }
+        }
+        
+        DispatchQueue.main.async {
+            let fps = Int(1/Date().timeIntervalSince(self.timer))
+            self.timer = Date()
+            self.showFPS.text = "FPS: \(fps)"
         }
 
         let handler = VNImageRequestHandler(cmSampleBuffer: sampleBuffer, orientation: .up, options: [:])
