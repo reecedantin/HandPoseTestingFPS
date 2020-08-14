@@ -26,9 +26,11 @@ class CameraViewController: UIViewController {
     
     private var gestureProcessor = HandGestureProcessor()
     
+    @IBOutlet weak var fpsView: FpsView!
     @IBOutlet weak var showFPS: UILabel!
     var fps = 0
     var timer = Date()
+    var fpspoints = [ 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -233,13 +235,17 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         defer {
             DispatchQueue.main.sync {
                 self.processPoints(thumbTip: thumbTip, indexTip: indexTip)
+                
+                let fps = Int(1/Date().timeIntervalSince(self.timer))
+                self.timer = Date()
+                self.showFPS.text = "FPS: \(fps)"
+               
+                self.fpspoints.remove(at: 0)
+                self.fpspoints.append(fps)
+                
+                self.fpsView.showPoints(self.fpspoints)
+                
             }
-        }
-        
-        DispatchQueue.main.async {
-            let fps = Int(1/Date().timeIntervalSince(self.timer))
-            self.timer = Date()
-            self.showFPS.text = "FPS: \(fps)"
         }
 
         let handler = VNImageRequestHandler(cmSampleBuffer: sampleBuffer, orientation: .up, options: [:])

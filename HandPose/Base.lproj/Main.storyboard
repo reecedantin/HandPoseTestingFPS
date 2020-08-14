@@ -4,6 +4,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17120"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -21,15 +22,26 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NOk-CH-76o" customClass="FpsView" customModule="HandPose" customModuleProvider="target">
+                                <rect key="frame" x="20" y="73" width="240" height="128"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="BV1-ir-Z6v"/>
+                                    <constraint firstAttribute="height" constant="128" id="YsG-UF-jH2"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="NOk-CH-76o" firstAttribute="top" secondItem="h8g-gN-UBB" secondAttribute="bottom" constant="8" symbolic="YES" id="7TE-RX-TFi"/>
+                            <constraint firstItem="NOk-CH-76o" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="WQX-Za-IWW"/>
                             <constraint firstItem="h8g-gN-UBB" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="uVd-5B-Edr"/>
                             <constraint firstItem="h8g-gN-UBB" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="v2T-Tp-xTa"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="fpsView" destination="NOk-CH-76o" id="Rlo-Md-VtD"/>
                         <outlet property="showFPS" destination="h8g-gN-UBB" id="w1e-g0-DT1"/>
                     </connections>
                 </viewController>
@@ -38,4 +50,9 @@
             <point key="canvasLocation" x="130" y="95"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>
