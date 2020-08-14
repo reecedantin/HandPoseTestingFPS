@@ -243,6 +243,12 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
                 self.fpspoints.remove(at: 0)
                 self.fpspoints.append(fps)
                 
+                var pointsum = 0
+                for point in self.fpspoints {
+                    pointsum += point
+                }
+                
+                self.showFPS.text = "FPS: \(pointsum / self.fpspoints.count)"
                 self.fpsView.showPoints(self.fpspoints)
                 
             }
