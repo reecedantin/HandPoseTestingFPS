@@ -43,16 +43,28 @@ class CameraView: UIView {
         previewLayer.addSublayer(overlayLayer)
     }
     
-    func showPoints(_ points: [CGPoint], color: UIColor) {
+    func showPoints(_ points: [CGPoint], lines: [HandGestureProcessor.PointsPair], color: UIColor) {
         pointsPath.removeAllPoints()
         for point in points {
             pointsPath.move(to: point)
             pointsPath.addArc(withCenter: point, radius: 5, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         }
+        
+        for line in lines {
+
+            let (first, second) = line
+            pointsPath.move(to: first)
+            pointsPath.addLine(to: second)
+        }
+        
+        overlayLayer.strokeColor = color.cgColor
         overlayLayer.fillColor = color.cgColor
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
+        overlayLayer.lineWidth = 5
         overlayLayer.path = pointsPath.cgPath
-        CATransaction.commit()
+        
+//        CATransaction.begin()
+//        CATransaction.setDisableActions(true)
+        
+//        CATransaction.commit()
     }
 }
